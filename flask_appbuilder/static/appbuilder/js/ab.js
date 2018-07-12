@@ -35,8 +35,26 @@ function loadSelectDataSlave(elem) {
 function loadSelectData() {
     $(".my_select2_ajax").each(function( index ) {
         var elem = $(this);
-        $.get( $(this).attr('endpoint'), function( data ) {
-            elem.select2({data: data, placeholder: "Select", allowClear: true});
+        elem.select2({
+          ajax: {
+            url: $(this).attr('endpoint'),
+            data: function (params) {if ($(this).data('queryField')) {
+                var query = eval('{' + $(this).data('queryField') + ': params.term}');
+              } else {
+                var query = {_flt_0_name: params.term};
+              }
+              return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+              var data = {
+                results: data
+              };
+              return data;
+            }
+          },
+          placeholder: "Select",
+          allowClear: true
         });
     });
 }
@@ -50,9 +68,10 @@ $(document).ready(function() {
     $('.appbuilder_datetime').datetimepicker({pickTime: false});
     $('.appbuilder_date').datetimepicker({
         pickTime: false });
-    $(".my_select2").select2({placeholder: "Select a State", allowClear: true});
+    $(".my_select2")
+    .select2({placeholder: "Select a State", allowClear: true});
     loadSelectData();
-    loadSelectDataSlave();
+    //loadSelectDataSlave();
     $(".my_select2.readonly").select2("readonly",true);
     $("a").tooltip({container:'.row', 'placement': 'bottom'});
 });
@@ -93,4 +112,3 @@ $(document).ready(function(){
 $('#modal-confirm').on('show.bs.modal', function(e) {
     $(this).find('#modal-confirm-ok').attr('href', $(e.relatedTarget).data('href'));
 });
-
