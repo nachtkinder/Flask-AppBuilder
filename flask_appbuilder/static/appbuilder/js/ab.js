@@ -71,7 +71,7 @@ $(document).ready(function() {
     $(".my_select2")
     .select2({placeholder: "Select a State", allowClear: true});
     loadSelectData();
-    //loadSelectDataSlave();
+    loadSelectDataSlave();
     $(".my_select2.readonly").select2("readonly",true);
     $("a").tooltip({container:'.row', 'placement': 'bottom'});
 });
