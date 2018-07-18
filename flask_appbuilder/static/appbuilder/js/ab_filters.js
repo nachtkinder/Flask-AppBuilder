@@ -4,7 +4,7 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
     //      {'col','label'}
     // :param active_filters:
     //      [['col','filter name','value'],[...],...]
-    
+
     var $root = $(element);
     var $container = $('.filters', $root);
     var lastCount = 0;
@@ -29,7 +29,7 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
 
 	    addRemoveFilter($el, name, labels[name]);
         var i_option = addFilterOptionsValue($el, name, filter_name);
-	
+
         var $field = $(form[name])
         // if form item complex like <div><input bla></div>, datetime
         if ( $("input", $($field)).html() != undefined ) {
@@ -66,7 +66,7 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
 
     function addFilterOptionsValue($el, name, value)
 	{
-		var $select = $('<select class="filter-op my_select2" />')                     
+		var $select = $('<select class="filter-op my_select2" />')
 
 		cx = 0;
         var i_option = -1;
@@ -89,25 +89,25 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
         $select.change(function(e) {
         	changeOperation(e, $el, name)
     	});
-        
+
         return i_option;
 	}
-    
+
 
     function addFilter(name, filter) {
         var $el = $('<tr />').appendTo($container);
-		
+
 	    addRemoveFilter($el, name, labels[name]);
 
         addFilterOptionsValue($el, name);
 	    var $field = $(form[name])
-	
+
 	    // if form item complex like <div><input bla></div>, datetime
 	    if ( $("input", $($field)).html() != undefined ) {
 		    $field_inner = $("input", $($field))
 		    $field_inner.attr('name', '_flt_0_' + name);
 		    $field_inner.attr('class', ' filter_val ' + $field_inner.attr('class'));
-	
+
 	    }
 	    else {
 		    $field.attr('name', '_flt_0_' + name);
@@ -133,7 +133,7 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
 	// ----------------------------------------------------------
     function changeOperation(e, $el, name) {
         $in = $el.find('.filter_val');
-        $in.attr('name','_flt_' + e.val + '_' + name);
+        $in.attr('name','_flt_' + e.currentTarget.value + '_' + name);
     }
 
 
@@ -141,7 +141,7 @@ var AdminFilters = function(element, labels, form, filters, active_filters) {
         var name = $(this).attr('name')
         addFilter(name);
     });
-    
+
     addActiveFilters();
 
 };
