@@ -1,3 +1,4 @@
+import logging
 from wtforms.widgets import HTMLString, html_params
 from wtforms import fields, widgets, TextField
 from flask_babel import lazy_gettext as _
@@ -81,47 +82,97 @@ class BS3PasswordFieldWidget(widgets.PasswordInput):
 
 
 class Select2AJAXWidget(object):
-    data_template = ('<input %(text)s />')
+    data_template = '<select %(text)s></select>'
 
-    def __init__(self, endpoint, extra_classes=None, style=None):
+    def __init__(
+        self, endpoint, extra_classes=None, multiple=False, style=None,
+        app=None, query_field=None
+    ):
         self.endpoint = endpoint
         self.extra_classes = extra_classes
-        self.style = style or u'width:250px'
+        self.multiple = multiple
+        self.query_field = query_field or '_flt_0_name'
+        self.style = style or u'width:100%'
+        self.select2_legacy = False
+
+        if app:
+            log = logging.getLogger(__name__)
+            self.select2_legacy = app.config.get('SELECT2_LEGACY', False)
+            if self.select2_legacy:
+                self.data_template = '<input %(text)s />'
+                if self.multiple:
+                    raise ValueError(
+                        'Multiple selection when using AJAX is not compatible'
+                        ' with 3.x versions of Select2.'
+                    )
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         kwargs.setdefault('name', field.name)
         kwargs.setdefault('endpoint', self.endpoint)
+        if self.select2_legacy:
+            kwargs.setdefault('type', 'text')
+        elif self.multiple:
+            kwargs.setdefault('multiple', 'true')
         kwargs.setdefault('style', self.style)
-        input_classes = 'input-group my_select2_ajax'
+        kwargs.setdefault('data-query-field', self.query_field)
+        input_classes = 'my_select2_ajax'
         if self.extra_classes:
             input_classes = input_classes + ' ' + self.extra_classes
         kwargs.setdefault('class', input_classes)
         if not field.data:
-            field.data = ""
+            field.data = ''
         template = self.data_template
 
-        return HTMLString(template % {'text': html_params(type='text',
-                                      value=field.data,
-                                      **kwargs)
-                                      })
+        return HTMLString(template % {'text': html_params(
+            value=field.data,
+            **kwargs
+        )})
 
 
 class Select2SlaveAJAXWidget(object):
-    data_template = ('<input class="input-group my_select2_ajax_slave" %(text)s />')
+    data_template = (
+        '<select class="input-group my_select2_ajax_slave"'
+        ' %(text)s></select>'
+    )
 
-    def __init__(self, master_id, endpoint, extra_classes=None, style=None):
+    def __init__(
+        self, master_id, endpoint, extra_classes=None, multiple=False,
+        style=None, app=None, query_field=None
+    ):
         self.endpoint = endpoint
         self.master_id = master_id
+        self.multiple = multiple
+        self.query_field = query_field or '_flt_0_name'
         self.extra_classes = extra_classes
-        self.style = style or u'width:250px'
+        self.style = style or u'width:100%'
+        self.select2_legacy = False
+
+        if app:
+            log = logging.getLogger(__name__)
+            self.select2_legacy = app.config.get('SELECT2_LEGACY', False)
+            if self.select2_legacy:
+                self.data_template = (
+                    '<input class="input-group my_select2_ajax_slave"'
+                    ' %(text)s />'
+                )
+                if self.multiple:
+                    raise ValueError(
+                        'Multiple selection when using AJAX is not compatible'
+                        ' with 3.x versions of Select2.'
+                    )
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         kwargs.setdefault('name', field.name)
         kwargs.setdefault('endpoint', self.endpoint)
         kwargs.setdefault('master_id', self.master_id)
+        if self.select2_legacy:
+            kwargs.setdefault('type', 'text')
+        elif self.multiple:
+            kwargs.setdefault('multiple', 'true')
         kwargs.setdefault('style', self.style)
+        kwargs.setdefault('data-query-field', self.query_field)
         input_classes = 'input-group my_select2_ajax'
         if self.extra_classes:
             input_classes = input_classes + ' ' + self.extra_classes
@@ -131,10 +182,11 @@ class Select2SlaveAJAXWidget(object):
             field.data = ""
         template = self.data_template
 
-        return HTMLString(template % {'text': html_params(type='text',
-                                      value=field.data,
-                                      **kwargs)
-                                      })
+        return HTMLString(template % {
+            'text': html_params(
+                value=field.data,
+                **kwargs)
+        })
 
 
 class Select2Widget(widgets.Select):
@@ -142,7 +194,7 @@ class Select2Widget(widgets.Select):
 
     def __init__(self, extra_classes=None, style=None):
         self.extra_classes = extra_classes
-        self.style = style or u'width:250px'
+        self.style = style or u'width:100%'
         return super(Select2Widget, self).__init__()
 
     def __call__(self, field, **kwargs):
@@ -161,7 +213,7 @@ class Select2ManyWidget(widgets.Select):
 
     def __init__(self, extra_classes=None, style=None):
         self.extra_classes = extra_classes
-        self.style = style or u'width:250px'
+        self.style = style or u'width:100%'
         return super(Select2ManyWidget, self).__init__()
 
     def __call__(self, field, **kwargs):

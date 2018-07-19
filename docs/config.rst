@@ -59,7 +59,7 @@ Use config.py to configure the following parameters. By default it will use SQLL
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_UID_FIELD               | if doing an indirect bind to ldap, this    |   No      |
 |                                   | is the field that matches the username     |           |
-|                                   | when searching for the account to bind     |           | 
+|                                   | when searching for the account to bind     |           |
 |                                   | to.                                        |           |
 |                                   | example:                                   |           |
 |                                   |                                            |           |
@@ -73,9 +73,9 @@ Use config.py to configure the following parameters. By default it will use SQLL
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_FIRSTNAME_FIELD         | sets the field in the ldap directory that  |   No      |
 |                                   | stores the user's first name. This field   |           |
-|                                   | is used to propagate user's first name     |           | 
+|                                   | is used to propagate user's first name     |           |
 |                                   | into the User database.                    |           |
-|                                   | Default is "givenName".                    |           | 
+|                                   | Default is "givenName".                    |           |
 |                                   | example:                                   |           |
 |                                   |                                            |           |
 |                                   | AUTH_TYPE = 2                              |           |
@@ -88,9 +88,9 @@ Use config.py to configure the following parameters. By default it will use SQLL
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_LASTNAME_FIELD          | sets the field in the ldap directory that  |   No      |
 |                                   | stores the user's last name. This field    |           |
-|                                   | is used to propagate user's last name      |           | 
+|                                   | is used to propagate user's last name      |           |
 |                                   | into the User database.                    |           |
-|                                   | Default is "sn".                           |           | 
+|                                   | Default is "sn".                           |           |
 |                                   | example:                                   |           |
 |                                   |                                            |           |
 |                                   | AUTH_TYPE = 2                              |           |
@@ -103,9 +103,9 @@ Use config.py to configure the following parameters. By default it will use SQLL
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_EMAIL_FIELD             | sets the field in the ldap directory that  |   No      |
 |                                   | stores the user's email address. This      |           |
-|                                   | field is used to propagate user's email    |           | 
+|                                   | field is used to propagate user's email    |           |
 |                                   | address into the User database.            |           |
-|                                   | Default is "mail".                         |           | 
+|                                   | Default is "mail".                         |           |
 |                                   | example:                                   |           |
 |                                   |                                            |           |
 |                                   | AUTH_TYPE = 2                              |           |
@@ -172,14 +172,24 @@ Use config.py to configure the following parameters. By default it will use SQLL
 |                                   | the existing languages with the countries  |           |
 |                                   | name and flag                              |           |
 +-----------------------------------+--------------------------------------------+-----------+
+| SELECT2_LEGACY                    | Boolean flag to restore usage of Legacy    |   No      |
+|                                   | 3.5.2 version of Select2.  Defaults to     |           |
+|                                   | False                                      |           |
+|                                   |                                            |           |
+|                                   | NOTE:  You'll need to pass the current     |           |
+|                                   | Flask_Appbuilder application as the new    |           |
+|                                   | app param of Select2AJAXWidget and         |           |
+|                                   | Select2SlaveAJAXWidget calls in order for  |           |
+|                                   | this to have an effect.                    |           |
++-----------------------------------+--------------------------------------------+-----------+
 
 
 Using config.py
 ---------------
- 
+
 My favorite way, and the one i advise if you are building a medium to large size application
 is to place all your configuration keys on a config.py file
- 
+
 next you only have to import them to the Flask app object, like this
 ::
 

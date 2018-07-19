@@ -29,7 +29,12 @@
          <![endif]-->
 
         <link href="{{url_for('appbuilder.static',filename='datepicker/bootstrap-datepicker.css')}}" rel="stylesheet">
-        <link href="{{url_for('appbuilder.static',filename='select2/select2.css')}}" rel="stylesheet">
+        {% if config.get('SELECT2_LEGACY') %}
+          {% set select2_version = 'legacy' %}
+        {% else %}
+          {% set select2_version = '4.0.5' %}
+        {% endif %}
+        <link href="{{url_for('appbuilder.static',filename='select2/' + select2_version + '/css/select2.css')}}" rel="stylesheet">
         <link href="{{url_for('appbuilder.static',filename='css/flags/flags16.css')}}" rel="stylesheet">
         <link href="{{url_for('appbuilder.static',filename='css/ab.css')}}" rel="stylesheet">
     {% endblock %}
@@ -50,7 +55,12 @@
 {% block tail_js %}
     <script src="{{url_for('appbuilder.static',filename='js/bootstrap.min.js')}}"></script>
     <script src="{{url_for('appbuilder.static',filename='datepicker/bootstrap-datepicker.js')}}"></script>
-    <script src="{{url_for('appbuilder.static',filename='select2/select2.js')}}"></script>
+    {% if config.get('SELECT2_LEGACY') %}
+      {% set select2_version = 'legacy' %}
+    {% else %}
+      {% set select2_version = '4.0.5' %}
+    {% endif %}
+    <script src="{{url_for('appbuilder.static',filename='select2/' + select2_version + '/js/select2.full.js')}}"></script>
     <script src="{{url_for('appbuilder.static',filename='js/ab.js')}}"></script>
 {% endblock %}
 
