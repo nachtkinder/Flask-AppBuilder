@@ -49,6 +49,20 @@ Use config.py to configure the following parameters. By default it will use SQLL
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_BIND_PASSWORD           | Define password for the bind user.         |   No      |
 +-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_TLS_DEMAND              | Demands TLS peer certificate checking      |   No      |
+|                                   | (Bool)                                     |           |
++-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_TLS_CACERTDIR           | CA Certificate directory to check peer     |   No      |
+|                                   | certificate                                |           |
++-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_TLS_CACERTFILE          | CA Certificate file to check peer          |   No      |
+|                                   | certificate                                |           |
++-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_TLS_CERTFILE            | Certificate file for client auth           |   No      |
+|                                   | use with AUTH_LDAP_TLS_KEYFILE             |           |
++-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_TLS_KEYFILE             | Certificate key file for client aut        |   No      |
++-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_SEARCH                  | Use search with self user                  |   No      |
 |                                   | registration or when using                 |           |
 |                                   | AUTH_LDAP_BIND_USER.                       |           |
@@ -56,6 +70,14 @@ Use config.py to configure the following parameters. By default it will use SQLL
 |                                   | AUTH_LDAP_SERVER = "ldap://ldapserver.new" |           |
 |                                   |                                            |           |
 |                                   | AUTH_LDAP_SEARCH = "ou=people,dc=example"  |           |
++-----------------------------------+--------------------------------------------+-----------+
+| AUTH_LDAP_SEARCH_FILTER           | Filter or limit allowable users from       |   No      |
+|                                   | the LDAP server, e.g., only the people     |           |
+|                                   | on your team.                              |           |
+|                                   |                                            |           |
+|                                   | AUTH_LDAP_SEARCH_FILTER =                  |           |
+|                                   | "(memberOf=cn=group name,OU=type,dc=ex     |           |
+|                                   | ,cn=com)"                                  |           |
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_UID_FIELD               | if doing an indirect bind to ldap, this    |   No      |
 |                                   | is the field that matches the username     |           |
@@ -117,7 +139,7 @@ Use config.py to configure the following parameters. By default it will use SQLL
 |                                   | AUTH_LDAP_EMAIL_FIELD = "mail"             |           |
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_ALLOW_SELF_SIGNED       | Allow LDAP authentication to use self      |   No      |
-|                                   | signed certificates                        |           |
+|                                   | signed certificates (LDAPS)                |           |
 +-----------------------------------+--------------------------------------------+-----------+
 | AUTH_LDAP_APPEND_DOMAIN           | Append a domain to all logins. No need to  |   No      |
 |                                   | use john@domain.local. Set it like:        |           |
@@ -182,16 +204,53 @@ Use config.py to configure the following parameters. By default it will use SQLL
 |                                   | Select2SlaveAJAXWidget calls in order for  |           |
 |                                   | this to have an effect.                    |           |
 +-----------------------------------+--------------------------------------------+-----------+
+| FAB_API_SHOW_STACKTRACE           | Sends api stack trace on uncaught          |   No      |
+|                                   | exceptions. (Boolean)                      |           |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_API_MAX_PAGE_SIZE             | Sets a limit for FAB Model Api page size   |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_API_SWAGGER_UI                | Enables a Swagger UI view (Boolean)        |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_UPDATE_PERMS                  | Enables or disables update permissions     |           |
+|                                   | Default is True (Boolean)                  |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_SECURITY_MANAGER_CLASS        | Declare a new custom SecurityManager       |           |
+|                                   | class                                      |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_ADD_SECURITY_VIEWS            | Enables or disables registering all        |           |
+|                                   | security views (boolean default:True)      |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_ADD_OPENAPI_VIEWS             | Enables or disables registering all        |           |
+|                                   | OPENAPI views (boolean default:True)       |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_ROLES                         | Configure builtin roles see Security       |           |
+|                                   | chapter for further detail                 |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_INDEX_VIEW                    | Path of your custom IndexView class        |           |
+|                                   | (str)                                      |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_MENU                          | Path of your custom Menu class             |           |
+|                                   | (str)                                      |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_BASE_TEMPLATE                 | Path of your custom base template          |           |
+|                                   |                                            |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_STATIC_FOLDER                 | Path to override default static folder     |           |
+|                                   |                                            |   No      |
++-----------------------------------+--------------------------------------------+-----------+
+| FAB_STATIC_URL_PATH               | Path to override default static folder     |           |
+|                                   |                                            |   No      |
+>>>>>>> master
++-----------------------------------+--------------------------------------------+-----------+
 
 
 Using config.py
 ---------------
-
-My favorite way, and the one i advise if you are building a medium to large size application
+ 
+My favorite way, and the one I advise if you are building a medium to large size application
 is to place all your configuration keys on a config.py file
-
-next you only have to import them to the Flask app object, like this
-::
+ 
+Next you only have to import them to the Flask app object, like this
 
     app = Flask(__name__)
     app.config.from_object('config')

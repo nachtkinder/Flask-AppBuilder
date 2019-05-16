@@ -1,8 +1,8 @@
+import datetime
 import logging
 import re
-import datetime
-from sqlalchemy.ext.declarative import declarative_base
-from flask_sqlalchemy import SQLAlchemy, _BoundDeclarativeMeta, _QueryProperty
+
+from flask_sqlalchemy import _QueryProperty, DefaultMeta, SQLAlchemy
 
 try:
     from sqlalchemy.ext.declarative import as_declarative
@@ -10,14 +10,15 @@ except ImportError:
     from sqlalchemy.ext.declarative.api import as_declarative
 
 try:
-    from sqlalchemy.orm.util import identity_key
+    from sqlalchemy.orm.util import identity_key  # noqa
+
     has_identity_key = True
 except ImportError:
     has_identity_key = False
 
 log = logging.getLogger(__name__)
 
-_camelcase_re = re.compile(r'([A-Z]+)(?=[a-z0-9])')
+_camelcase_re = re.compile(r"([A-Z]+)(?=[a-z0-9])")
 
 
 class SQLA(SQLAlchemy):
@@ -30,8 +31,8 @@ class SQLA(SQLAlchemy):
 
         Use it and configure it just like flask_SQLAlchemy
     """
-    def make_declarative_base(self, metadata=None):
-        """Creates the declarative base."""
+
+    def make_declarative_base(self, model, metadata=None):
         base = Model
         base.query = _QueryProperty(self)
         return base
@@ -41,12 +42,12 @@ class SQLA(SQLAlchemy):
         result = []
         tables = Model.metadata.tables
         for key in tables:
-            if tables[key].info.get('bind_key') == bind:
+            if tables[key].info.get("bind_key") == bind:
                 result.append(tables[key])
         return result
 
 
-class ModelDeclarativeMeta(_BoundDeclarativeMeta):
+class ModelDeclarativeMeta(DefaultMeta):
     """
         Base Model declarative meta for all Models definitions.
         Setups bind_keys to support multiple databases.
@@ -54,15 +55,16 @@ class ModelDeclarativeMeta(_BoundDeclarativeMeta):
     """
 
 
-@as_declarative(name='Model', metaclass=ModelDeclarativeMeta)
+@as_declarative(name="Model", metaclass=ModelDeclarativeMeta)
 class Model(object):
     """
-        Use this class has the base for your models, it will define your table names automatically
+        Use this class has the base for your models,
+        it will define your table names automatically
         MyModel will be called my_model on the database.
 
         ::
 
-            from sqlalchemy import Table, Column, Integer, String, Boolean, ForeignKey, Date
+            from sqlalchemy import Integer, String
             from flask_appbuilder import Model
 
             class MyModel(Model):
@@ -71,7 +73,7 @@ class Model(object):
 
     """
 
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {"extend_existing": True}
 
     def to_json(self):
         result = dict()
@@ -83,9 +85,7 @@ class Model(object):
         return result
 
 
-
 """
     This is for retro compatibility
 """
 Base = Model
-
